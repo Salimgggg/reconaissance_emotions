@@ -1,28 +1,20 @@
 import numpy as np
 import os
-import pandas
+import pandas as pd
 from IPython.display import display
 
-def get_labels(annot_file, file_name):
-    
-    f = open(annot_file, 'r').read()
-    f = f.split('\n')
-    f = f[2:]
-    
-    for data in f:
-        
-        if len(data) > 0:
-            if data[0] == '[':
-                data2 = data.split('\t')
-                
-                if data2[1] == file_name:
-                    emo = data2[2]
-                    vad = data2[3][1:-1].split(', ')
-                    return emo, [float(x) for x in vad]
-        
-    raise ValueError('Label not found')
 
 def get_mocap_rot(path):
+    '''get_mocap_rot permet d'extraire 
+    les differentes coordonnees des points du 
+    visage pour un enregistrement donne. La fonction 
+    prend en argument le path relatif a un enregistrement
+    et sort en argument : 
+    - le nom des points
+    - les intitules des coordonnes de ces points
+    - un np.array de taille (nb de frames, nb de points, 3)
+    avec pour chaque frame, les 3 coordonnees des points
+    du visage'''
 
     f = open(path, 'r').read()
     f = np.array(f.split('\n'))
@@ -36,28 +28,15 @@ def get_mocap_rot(path):
         data2 = data.split(' ')
         if(len(data2)<2):
             continue
-        dic = {'frame': data2[0], 'time': data2[1], 
-               'markers': np.array(data2[2:]).astype(float)}
-        data_list.append(dic)
+        coordonnees = data2[2:]
+        data_list.append(coordonnees)
+    data_list = np.array(data_list)
+    data_list = np.reshape(data_list, (-1, len(header)-2 ,3))
+
+
         
     return header, xyz, data_list
 
-def get_ph_fa(path):
-    f = open(path, 'r').read()
-    f = np.array(f.split('\n'))
-    header = f[0].split()
-    f = f[1:-2]
-    data_list = []
-    
-    for data in f:
-        data2 = data.split()
-        dic = {'SFrm':np.array(data2[0]).astype(int), 
-               'EFrm':np.array(data2[1]).astype(int), 
-               'SegAScr':np.array(data2[2]).astype(int), 
-               'Phone':data2[3]}
-        data_list.append(dic)
-    
-    return header, data_list
 
 def frame_to_s(fr):
     return (fr+2)*10/1000
@@ -65,6 +44,37 @@ def frame_to_s(fr):
 
 root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
 
-df = pandas.read_csv(os.path.join(root_path, 'iemocap.csv'))
+df = pd.read_csv(os.path.join(root_path, 'iemocap.csv'))
 
-display(df)
+# display(df)
+
+
+
+
+
+for index, row in df.iterrows():
+
+    session = row['session']
+    method = row['method']
+    gender = row['gender']
+    emotion = row['emotion']
+    n_annot = row['emotion']
+    agreement = row['agreement']
+    wav_path = row['wav_path']
+  
+    _, file_name = os.path.split(wav_path)
+ 
+    break
+
+MOCAP_path = df['MOCAP_rotated_path'].array
+emotions_results = df['emotion'].array
+
+print(MOCAP_path)
+
+def global_mocap_info (list_paths) : 
+    for path in list_paths : 
+        header, xyz, data = get_mocap_rot(path)
+        
+
+
+# print (data_rot, data_rot.shape)
