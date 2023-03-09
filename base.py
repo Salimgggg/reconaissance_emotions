@@ -66,15 +66,20 @@ for index, row in df.iterrows():
  
     break
 
-MOCAP_path = df['MOCAP_rotated_path'].array
-emotions_results = df['emotion'].array
+MOCAP_path = df['MOCAP_rotated_path']
+emotions_results = df['emotion']
 
-print(MOCAP_path)
+#display the number of each emotion in the dataset  
+
+
+print(emotions_results.value_counts())
 
 def global_mocap_info (list_paths) : 
     for path in list_paths : 
         header, xyz, data = get_mocap_rot(path)
         
+        
+
 
 
 # print (data_rot, data_rot.shape)
