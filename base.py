@@ -32,11 +32,9 @@ def get_mocap_rot(path):
         data_list.append(coordonnees)
     data_list = np.array(data_list)
     data_list = np.reshape(data_list, (-1, len(header)-2 ,3))
-
-
-        
+    data_list = data_list.astype(np.float32)
     return header, xyz, data_list
-
+#print(get_mocap_rot('IEMOCAP_full_release_withoutVideos_sentenceOnly/IEMOCAP_full_release/Session1/sentences/MOCAP_rotated/Ses01F_impro01/Ses01F_impro01_F000.txt')[2])
 
 def frame_to_s(fr):
     return (fr+2)*10/1000
@@ -72,7 +70,7 @@ emotions_results = df['emotion']
 #display the number of each emotion in the dataset  
 
 
-print(emotions_results.value_counts())
+#print(emotions_results.value_counts())
 
 def global_mocap_info (list_paths) : 
     for path in list_paths : 
