@@ -40,9 +40,7 @@ def frame_to_s(fr):
     return (fr+2)*10/1000
 
 
-root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
 
-df = pd.read_csv(os.path.join(root_path, 'iemocap.csv'))
 
 # display(df)
 
@@ -64,8 +62,16 @@ for index, row in df.iterrows():
  
     break
 
-MOCAP_path = df['MOCAP_rotated_path']
-emotions_results = df['emotion']
+if __name__ =='__main__' : 
+
+
+    root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
+
+    df = pd.read_csv(os.path.join(root_path, 'iemocap.csv'))
+
+
+    MOCAP_path = df['MOCAP_rotated_path']
+    emotions_results = df['emotion']
 
 #display the number of each emotion in the dataset  
 
