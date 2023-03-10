@@ -3,8 +3,10 @@ import os
 import pandas as pd
 from IPython.display import display
 
+root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
 
 def get_mocap_rot(path):
+    
     '''get_mocap_rot permet d'extraire 
     les differentes coordonnees des points du 
     visage pour un enregistrement donne. La fonction 
@@ -16,7 +18,9 @@ def get_mocap_rot(path):
     avec pour chaque frame, les 3 coordonnees des points
     du visage'''
 
-    f = open(path, 'r').read()
+
+    real_path = os.path.join(root_path, path)
+    f = open(real_path, 'r').read()
     f = np.array(f.split('\n'))
     header = f[0].split(' ')
     xyz = f[1].split(' ')
@@ -34,55 +38,37 @@ def get_mocap_rot(path):
     data_list = np.reshape(data_list, (-1, len(header)-2 ,3))
     data_list = data_list.astype(np.float32)
     return header, xyz, data_list
-#print(get_mocap_rot('IEMOCAP_full_release_withoutVideos_sentenceOnly/IEMOCAP_full_release/Session1/sentences/MOCAP_rotated/Ses01F_impro01/Ses01F_impro01_F000.txt')[2])
 
 def frame_to_s(fr):
     return (fr+2)*10/1000
 
+df = pd.read_csv(os.path.join(root_path, 'iemocap.csv'))
 
 
+for index, row in df.iterrows():
 
-# display(df)
+    session = row['session']
+    method = row['method']
+    gender = row['gender']
+    emotion = row['emotion']
+    n_annot = row['emotion']
+    agreement = row['agreement']
+    wav_path = row['wav_path']
+
+    _, file_name = os.path.split(wav_path)
+
+    break
 
 
-
-
-
-
-
-if __name__ =='__main__' : 
-
-
-    root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
-
-    df = pd.read_csv(os.path.join(root_path, 'iemocap.csv'))
-
-    for index, row in df.iterrows():
-
-        session = row['session']
-        method = row['method']
-        gender = row['gender']
-        emotion = row['emotion']
-        n_annot = row['emotion']
-        agreement = row['agreement']
-        wav_path = row['wav_path']
-    
-        _, file_name = os.path.split(wav_path)
- 
-        break
+if __name__ == '__main__' : 
 
 
     MOCAP_path = df['MOCAP_rotated_path']
     emotions_results = df['emotion']
 
+    print(get_mocap_rot(MOCAP_path[0]))
 
 
-
-
-
-def global_mocap_info (list_paths) : 
-    for path in list_paths : 
-        header, xyz, data = get_mocap_rot(path)
         
         
 
