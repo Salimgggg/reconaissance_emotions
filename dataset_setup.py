@@ -20,8 +20,9 @@ class Dataset :
         return len(self.labels)
     
     def __getitem__(self, idx) : 
-        item = base.get_mocap_rot(self.data_paths[idx])
-        return item
+        item = base.get_mocap_rot(self.data_paths[idx])[2]
+        label = self.labels[idx]
+        return torch.from_numpy(item), label
 
 root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
 
@@ -31,9 +32,11 @@ iemocap_dataset = Dataset(info_path)
 
 print(iemocap_dataset.__len__())
 
-print(iemocap_dataset.__getitem__(4))
 
 
+example = iemocap_dataset.__getitem__(4)[0].shape
+
+print(example)
 
 
 
