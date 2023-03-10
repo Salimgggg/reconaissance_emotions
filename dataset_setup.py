@@ -11,10 +11,8 @@ import os
 
 class Dataset : 
 
-    def __init__(self, root_path, list_of_paths) :
-        self.root_path = root_path
-        self.list_of_paths = list_of_paths
-        self.info = pd.read_csv(os.path.join(root_path, self.list_of_paths))
+    def __init__(self, info_path) :
+        self.info = pd.read_csv(info_path)
 
     def __len__(self) : 
         return len(self.label)

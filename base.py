@@ -48,19 +48,7 @@ def frame_to_s(fr):
 
 
 
-for index, row in df.iterrows():
 
-    session = row['session']
-    method = row['method']
-    gender = row['gender']
-    emotion = row['emotion']
-    n_annot = row['emotion']
-    agreement = row['agreement']
-    wav_path = row['wav_path']
-  
-    _, file_name = os.path.split(wav_path)
- 
-    break
 
 if __name__ =='__main__' : 
 
@@ -69,14 +57,28 @@ if __name__ =='__main__' :
 
     df = pd.read_csv(os.path.join(root_path, 'iemocap.csv'))
 
+    for index, row in df.iterrows():
+
+        session = row['session']
+        method = row['method']
+        gender = row['gender']
+        emotion = row['emotion']
+        n_annot = row['emotion']
+        agreement = row['agreement']
+        wav_path = row['wav_path']
+    
+        _, file_name = os.path.split(wav_path)
+ 
+        break
+
 
     MOCAP_path = df['MOCAP_rotated_path']
     emotions_results = df['emotion']
 
-#display the number of each emotion in the dataset  
 
 
-#print(emotions_results.value_counts())
+
+
 
 def global_mocap_info (list_paths) : 
     for path in list_paths : 
