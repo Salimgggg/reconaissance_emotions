@@ -15,9 +15,12 @@ from torch.utils.data import DataLoader
 
 class IEMOCAP_dataset(Dataset) : 
 
-    def __init__(self, info_path) :
+    def __init__(self, info_path,test) :
         self.info = pd.read_csv(info_path) # this is the df from base
-        self.data_paths = self.info['MOCAP_rotated_path']
+        if test == True :
+            self.data_paths = self.info['MOCAP_rotated_path'][:7870]
+        else : 
+            self.data_paths = self.info['MOCAP_rotated_path'][7870:]       
         self.labels = self.info['emotion']
 
     def __len__(self) : 
@@ -27,6 +30,9 @@ class IEMOCAP_dataset(Dataset) :
         item = base.get_mocap_rot(self.data_paths[idx])[2]
         label = self.labels[idx]
         return torch.from_numpy(item), label
+    
+
+
 
 root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
 info_path = os.path.join(root_path, 'iemocap.csv')

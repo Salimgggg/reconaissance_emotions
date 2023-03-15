@@ -3,10 +3,11 @@ import torchvision
 import torchvision.transforms as transforms
 import math
 from base import *
+import torch.nn as nn
 train_data=get_mocap_rot('IEMOCAP_full_release_withoutVideos_sentenceOnly/IEMOCAP_full_release/Session1/sentences/MOCAP_rotated/Ses01F_impro01/Ses01F_impro01_F000.txt')[2]
-print(train_data)
 train_data_tensor = torch.Tensor(train_data)
-
+train_data_tensor_normal = torch.nn.functional.normalize(train_data_tensor)
+print(train_data_tensor_normal)
 #val_data_tensor = torch.Tensor(val_data)
 #test_data_tensor = torch.Tensor(test_data)
 
@@ -30,7 +31,7 @@ def preprocess_motion_capture_data(data):
 h,xyz,datas=get_mocap_rot('IEMOCAP_full_release_withoutVideos_sentenceOnly/IEMOCAP_full_release/Session1/sentences/MOCAP_rotated/Ses01F_impro01/Ses01F_impro01_F000.txt')
 """
 #print(preprocess_motion_capture_data(datas[:]))
-import torch.nn as nn
+
 
 class RNN(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
