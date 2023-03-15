@@ -6,10 +6,14 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import base
 import os
+from torch.utils.data import DataLoader
+
+#train_dataloader = DataLoader(training_data, batch_size=64, shuffle=True)
+#test_dataloader = DataLoader(test_data, batch_size=64, shuffle=True)
 
 
 
-class Dataset : 
+class IEMOCAP_dataset(Dataset) : 
 
     def __init__(self, info_path) :
         self.info = pd.read_csv(info_path) # this is the df from base
@@ -27,11 +31,11 @@ class Dataset :
 root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
 info_path = os.path.join(root_path, 'iemocap.csv')
 
-iemocap_dataset = Dataset(info_path)
+iemocap_dataset = IEMOCAP_dataset(info_path)
 
 print(iemocap_dataset.__len__())
 
-example = iemocap_dataset.__getitem__(4)[0].shape
+example = iemocap_dataset.__getitem__(4)
 
 print(example)
 
