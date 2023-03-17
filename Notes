@@ -4,4 +4,4 @@ Notes
 Couche neuronal qui apprend toute seule batchnorm
 
 
-Savoir comment normaliser 
+Normaliser sur chaque coordonnée 

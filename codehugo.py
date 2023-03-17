@@ -1,3 +1,4 @@
+import numpy
 import torch
 import torchvision
 import torchvision.transforms as transforms
@@ -6,11 +7,11 @@ from base import get_mocap_rot
 import torch.nn as nn
 train_data = get_mocap_rot(
     '/workspaces/reconaissance_emotions/IEMOCAP_full_release_withoutVideos_sentenceOnly/IEMOCAP_full_release/Session1/sentences/MOCAP_rotated/Ses01F_impro01/Ses01F_impro01_F000.txt')[2]
+
+m=numpy.mean(train_data, 0)
+std=numpy.std(train_data, 0)
 train_data_tensor = torch.Tensor(train_data)
-data_mean = torch.mean(train_data_tensor)
-data_std = torch.std(train_data_tensor)
-normalized_data = (train_data_tensor - data_mean) / data_std
-print(normalized_data)
+print(train_data_tensor)
 # print(train_data)
 # val_data_tensor = torch.Tensor(val_data)
 # test_data_tensor = torch.Tensor(test_data)
