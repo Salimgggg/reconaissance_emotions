@@ -115,7 +115,9 @@ def animate_facial_landmarks_3D(facial_landmarks):
     plt.show(block=True)
     return anim
 
+
 animate_facial_landmarks_3D(training_data[8][0])
+print(training_data[8][1])
 
 # print(points.index('Mou4'))
 
