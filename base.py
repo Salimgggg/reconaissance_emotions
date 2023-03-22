@@ -6,7 +6,18 @@ from IPython.display import display
 root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
 
 emotion_list = ['neu' 'fru' 'xxx' 'sur' 'ang' 'hap' 'sad' 'exc' 'oth' 'fea' 'dis']
-points_list = ['CH1', 'CH2', 'CH3', 'FH1', 'FH2', 'FH3', 'LC1', 'LC2', 'LC3', 'LC4', 'LC5', 'LC6', 'LC7', 'LC8', 'RC1', 'RC2', 'RC3', 'RC4', 'RC5', 'RC6', 'RC7', 'RC8', 'LLID', 'RLID', 'MH', 'MNOSE', 'LNSTRL', 'TNOSE', 'RNSTRL', 'LBM0', 'LBM1', 'LBM2', 'LBM3', 'RBM0', 'RBM1', 'RBM2', 'RBM3', 'LBRO1', 'LBRO2', 'LBRO3', 'LBRO4', 'RBRO1', 'RBRO2', 'RBRO3', 'RBRO4', 'Mou1', 'Mou2', 'Mou3', 'Mou4', 'Mou5', 'Mou6', 'Mou7', 'Mou8', 'LHD', 'RHD']
+
+zone = {'FH' : ['FH1', 'FH2', 'FH3'],
+        'CH' : ['CH1', 'CH2', 'CH3'], 
+        'RB' : ['RBM0', 'RBM1', 'RBM2', 'RBM3', 'RBRO1', 'RBRO2', 'RBRO3', 'RBRO4' ],
+        'LB' : ['LBM0', 'LBM1', 'LBM2', 'LBM3', 'LBRO1', 'LBRO2', 'LBRO3', 'LBRO4' ], 
+        'N'  : ['MH', 'MNOSE', 'LNSTRL', 'TNOSE', 'RNSTRL'],
+        'MOU': ['Mou1', 'Mou2', 'Mou3', 'Mou4', 'Mou5', 'Mou6', 'Mou7', 'Mou8'], 
+        'LC' : ['LC1', 'LC2', 'LC3', 'LC4', 'LC5', 'LC6', 'LC7', 'LC8'],
+        'RC' : ['RC1', 'RC2', 'RC3', 'RC4', 'RC5', 'RC6', 'RC7', 'RC8'], 
+        'HD' : ['LHD', 'RHD'],
+        'LD' : ['LLID', 'RLID'] }
+
 
 def get_mocap_rot(path):
     
