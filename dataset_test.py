@@ -14,8 +14,11 @@ root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
 info_path = os.path.join(root_path, 'iemocap.csv')
 
 class IEMOCAP_dataset(Dataset):
-
+    
     def __init__(self, info_path, training):
+        '''training is a boolean, specifying if we want the training or test dataset
+        The first 7869 datapoints are from the 4 first sessions, and the last ones are the
+        5th session. We want to train on the first 4, and test on the 5th.'''
         self.info_path = info_path
         self.training = training
 
@@ -38,22 +41,14 @@ class IEMOCAP_dataset(Dataset):
         
         return item, label
 
-iemocap_dataset = IEMOCAP_dataset(info_path, True)
+'''We instantiate the training and test datasets using the info_path '''
 
 training_data = IEMOCAP_dataset(info_path, True)
 test_data = IEMOCAP_dataset(info_path, False)
 
-
-         
-a = training_data[0][0]
-b = training_data[1][0]
-
-print("size(a) is {} and size(b) is {}".format(a.shape, b.shape))
-
-p = pad_sequence([a,b], batch_first=True)
-
-print("padded shape is ", p.shape)
-
+'''We are feeding different size datapoints to the dataloader which doesn't support that with
+the default collate_fn function, so we define a custom collate_fn to zero_pad every batch following
+the datapoint with the most frames of this batch'''
 
 def collate_fn(batch) :
     sequence = [batch[i][0] for i in range (len(batch))]
@@ -64,9 +59,7 @@ def collate_fn(batch) :
 train_dataloader = DataLoader(training_data, batch_size=64, shuffle=False, collate_fn=collate_fn)
 test_dataloader = DataLoader(test_data, batch_size=64, shuffle=False,collate_fn=collate_fn)
 
-a = iter(train_dataloader)
 
-print(next(a).shape, next(a).shape)
 
 
 

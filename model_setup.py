@@ -3,25 +3,17 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
+from dataset_test import training_dataloader, test_dataloader
 
-# Custom dataset class
-class EmotionDataset(Dataset):
-    def __init__(self, data, labels):
-        self.data = data
-        self.labels = labels
 
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, idx):
-        return self.data[idx], self.labels[idx]
 
 # Define the LSTM model
 class EmotionModel(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, num_classes):
         super(EmotionModel, self).__init__()
-        self.lstm = nn.LSTM(input_size, hidden_size, num, batch_first=True)
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
         self.fc = nn.Linear(hidden_size, num_classes)
+
 
     def forward(self, x):
         out, _ = self.lstm(x)
@@ -42,14 +34,12 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 # Create DataLoaders for training and validation sets
-train_dataset = EmotionDataset(train_data, train_labels)
-train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-val_dataset = EmotionDataset(val_data, val_labels)
-val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+training_dataloader = training_dataloader
+test_dataloader = test_dataloader
 
 # Train the model
 for epoch in range(num_epochs):
-    for i, (data, labels) in enumerate(train_loader):
+    for i, (data, labels) in enumerate(training_dataloader):
         # Forward pass
         outputs = model(data)
         loss = criterion(outputs, labels)
@@ -63,7 +53,7 @@ for epoch in range(num_epochs):
     with torch.no_grad():
         correct = 0
         total = 0
-        for data, labels in val_loader:
+        for data, labels in test_dataloader:
             outputs = model(data)
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
