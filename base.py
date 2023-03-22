@@ -51,6 +51,7 @@ def get_mocap_rot(path):
     data_list = np.array(data_list)
     data_list = np.reshape(data_list, (-1, len(header)-2 ,3))
     data_list = data_list.astype(np.float32)
+    data_list[np.isnan(data_list)] = 0
     return header, xyz, data_list
 
 def frame_to_s(fr):

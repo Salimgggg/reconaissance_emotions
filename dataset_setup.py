@@ -35,11 +35,10 @@ class IEMOCAP_dataset(Dataset):
     def __getitem__(self, idx): 
         item = base.get_mocap_rot(self.data_paths[idx])[2]
         label = self.labels[idx]
-        
-        data_mean = np.mean(item, 0)
-        data_std = np.std(item, 0)
-        normalized_data = (item - data_mean)/data_std
-        item_tensor = torch.Tensor(normalized_data)
+        #data_mean = np.mean(item, 0)
+        #data_std = np.std(item, 0)
+        #normalized_data = (item - data_mean)/data_std
+        item_tensor = torch.Tensor(item)
         return item_tensor, label
    
 
