@@ -4,6 +4,8 @@ import pandas as pd
 from IPython.display import display
 
 root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
+points = ['CH1', 'CH2', 'CH3', 'FH1', 'FH2', 'FH3', 'LC1', 'LC2', 'LC3', 'LC4', 'LC5', 'LC6', 'LC7', 'LC8', 'RC1', 'RC2', 'RC3', 'RC4', 'RC5', 'RC6', 'RC7', 'RC8', 'LLID', 'RLID', 'MH', 'MNOSE', 'LNSTRL', 'TNOSE', 'RNSTRL', 'LBM0', 'LBM1', 'LBM2', 'LBM3', 'RBM0', 'RBM1', 'RBM2', 'RBM3', 'LBRO1', 'LBRO2', 'LBRO3', 'LBRO4', 'RBRO1', 'RBRO2', 'RBRO3', 'RBRO4', 'Mou1', 'Mou2', 'Mou3', 'Mou4', 'Mou5', 'Mou6', 'Mou7', 'Mou8', 'LHD', 'RHD']
+
 
 def get_mocap_rot(path):
     
@@ -66,11 +68,11 @@ if __name__ == '__main__' :
     MOCAP_path = df['MOCAP_rotated_path']
     emotions_results = df['emotion']
 
-    print(get_mocap_rot(MOCAP_path[0]))
+    print(get_mocap_rot(MOCAP_path[0])[0])
 
 
         
-    
+
 
 
 
