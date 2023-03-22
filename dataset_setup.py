@@ -36,12 +36,12 @@ class IEMOCAP_dataset(Dataset):
         item = base.get_mocap_rot(self.data_paths[idx])[2]
         label = self.labels[idx]
         
-        # data_mean = np.mean(item, 0)
-        # data_std = np.std(item, 0)
-        # normalized_data = (item - data_mean)/data_mean
-        # item_tensor = torch.Tensor(item)
-        # return normalized_data, label
-        return item, label
+        data_mean = np.mean(item, 0)
+        data_std = np.std(item, 0)
+        normalized_data = (item - data_mean)/data_std
+        item_tensor = torch.Tensor(normalized_data)
+        return item_tensor, label
+   
 
 
 root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
