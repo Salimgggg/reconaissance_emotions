@@ -64,6 +64,9 @@ def collate_fn(batch) :
 train_dataloader = DataLoader(training_data, batch_size=64, shuffle=False, collate_fn=collate_fn)
 test_dataloader = DataLoader(test_data, batch_size=64, shuffle=False,collate_fn=collate_fn)
 
+a = iter(train_dataloader)
+
+print(next(a).shape, next(a).shape)
 
 
 
