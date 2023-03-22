@@ -13,7 +13,7 @@ import numpy as np
 root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
 info_path = os.path.join(root_path, 'iemocap.csv')
 
-emotions_of_interest = ['sur', 'ang']
+emotions_of_interest = ['sur', 'hap']
 
 class IEMOCAP_dataset(Dataset):
     
