@@ -3,6 +3,7 @@ import torch
 from torch.utils.data import Dataset
 from torchvision import datasets
 from torchvision.transforms import ToTensor
+from torch.nn.utils.rnn import pad_sequence
 import matplotlib.pyplot as plt
 import pandas as pd
 import base
@@ -30,10 +31,9 @@ class IEMOCAP_dataset(Dataset):
 
     def __len__(self):
             return len(self.labels)
-# pour l'instant on normalise (x-mean)/std sur la frame entière
 
     def __getitem__(self, idx): 
-        item = base.get_mocap_rot(self.data_paths[idx])[2]
+        item = torch.from_numpy(base.get_mocap_rot(self.data_paths[idx])[2])
         label = self.labels[idx]
         
         return item, label
@@ -43,16 +43,27 @@ iemocap_dataset = IEMOCAP_dataset(info_path, True)
 training_data = IEMOCAP_dataset(info_path, True)
 test_data = IEMOCAP_dataset(info_path, False)
 
-def collate_fn(batch) :
-    for item in batch : 
-        pass
-    pass
+
          
+a = training_data[0][0]
+b = training_data[1][0]
+
+print("size(a) is {} and size(b) is {}".format(a.shape, b.shape))
+
+p = pad_sequence([a,b], batch_first=True)
+
+print("padded shape is ", p.shape)
 
 
-train_dataloader = DataLoader(training_data, batch_size=64, shuffle=False)
-test_dataloader = DataLoader(test_data, batch_size=64, shuffle=False)
+def collate_fn(batch) :
+    sequence = [batch[i][0] for i in range (len(batch))]
+    padded = pad_sequence(sequence, batch_first=True)
+    return padded
 
-print(next(iter(test_dataloader)))
+
+train_dataloader = DataLoader(training_data, batch_size=64, shuffle=False, collate_fn=collate_fn)
+test_dataloader = DataLoader(test_data, batch_size=64, shuffle=False,collate_fn=collate_fn)
+
+
 
 
