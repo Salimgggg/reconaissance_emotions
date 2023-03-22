@@ -6,42 +6,31 @@ from IPython.display import display
 root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
 
 
-def get_mocap_rot(path):
-    
-    '''get_mocap_rot permet d'extraire 
-    les differentes coordonnees des points du 
-    visage pour un enregistrement donne. La fonction 
-    prend en argument le path relatif a un enregistrement
-    et sort en argument : 
-    - le nom des points
-    - les intitules des coordonnes de ces points
-    - un np.array de taille (nb de frames, nb de points, 3)
-    avec pour chaque frame, les 3 coordonnees des points
-    du visage'''
+def generate_tensor(full_path, points_list):
+    f = open(full_path, "r")
+    data = f.readlines()
+    data = [i.replace('\n', '') for i in data]
+    for i in range(len(data)):
+        data[i] = data[i].split(' ')
+    #nb de frames, points, 
+    df = pd.DataFrame(index = ['x','y','z'], columns = data[0][2:])
+    video = {}
+    for frame in data[2:]:
+        points = [frame[i:i+3] for i in range(2,len(frame),3)]
+        #points = slice_per(frame[2:], int(len(frame[2:])/3))
+        point = 0
+        for column in df.columns:
+            df[column] = points[point]
+            point = point + 1
+        video[frame[0]] = {'time': frame[1], 'points': df.astype(float)}
 
 
-    real_path = os.path.join(root_path, path)
-    f = open(real_path, 'r').read()
-    f = np.array(f.split('\n'))
-    header = header = f[0].split(' ')
-    xyz = f[1].split(' ')
-    f = f[2:]
-    
-    data_list = []
-    
-    for data in f:
-        data2 = data.split(' ')
-        if(len(data2)<2):
-            continue
-        coordonnees = data2[2:]
-        data_list.append(coordonnees)
-    data_list = np.array(data_list)
-    data_list = np.reshape(data_list, (-1, len(header)-2 ,3))
-    data_list = data_list.astype(np.float32)
-    return xyz, data_list
+    tensor = np.zeros((0,len(points_list),3))
+    for frame in video:
+        mat = video[frame]['points'][points_list].to_numpy().T
+        tensor = np.concatenate((tensor, np.expand_dims(mat, axis=0)), axis=0)
+    return tensor
 
-def frame_to_s(fr):
-    return (fr+2)*10/1000
 
 df = pd.read_csv(os.path.join(root_path, 'iemocap.csv'))
 
@@ -67,7 +56,7 @@ if __name__ == '__main__' :
     MOCAP_path = df['MOCAP_rotated_path']
     emotions_results = df['emotion']
 
-    print(get_mocap_rot(MOCAP_path[0])[0])
+    print(generate_tensor(MOCAP_path[0]))
 
 
         

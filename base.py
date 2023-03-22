@@ -86,7 +86,7 @@ if __name__ == '__main__' :
     MOCAP_path = df['MOCAP_rotated_path']
     emotions_results = df['emotion']
 
-    print(get_mocap_rot(MOCAP_path[0]))
+    print(get_mocap_rot(MOCAP_path[0])[0])
 
 
         
