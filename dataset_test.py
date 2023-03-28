@@ -12,8 +12,11 @@ import numpy as np
 
 root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
 info_path = os.path.join(root_path, 'iemocap.csv')
+emotion_list = ['neu', 'fru', 'xxx', 'sur', 'ang', 'hap', 'sad', 'exc', 'oth', 'fea', 'dis']
+emotions_of_interest = ['neu', 'ang']
+label_map = {'neu': 0, 'ang': 1}
+input_size = 165
 
-emotions_of_interest = ['ang', 'hap']
 
 class IEMOCAP_dataset(Dataset):
     
@@ -24,7 +27,8 @@ class IEMOCAP_dataset(Dataset):
         self.emotions_of_interest = emotions_of_interest
         self.info_path = info_path
         self.training = training
-        self.dataframe = pd.read_csv(self.info_path)  # this is the df from base
+        self.dataframe = pd.read_csv(self.info_path) # this is the df from base
+        self.dataframe = self.dataframe[self.dataframe['MOCAP_rotated_path'] != 'missing']  
         self.dataframe = self.dataframe[['session', 'MOCAP_rotated_path', 'emotion']]
 
         if self.training :
@@ -60,16 +64,23 @@ the datapoint with the most frames of this batch'''
 
 def collate_fn(batch) :
     sequence = [batch[i][0] for i in range (len(batch))]
-    padded = pad_sequence(sequence, batch_first=True)
-    return padded
+    padded_sequence = pad_sequence(sequence, batch_first=True)
+    padded_sequence = padded_sequence.reshape(padded_sequence.shape[0], padded_sequence.shape[1], input_size)
+
+    labels = [batch[i][1] for i in range(len(batch))]
+    num_labels = [label_map[label] for label in labels]
+    padded_labels = torch.tensor(num_labels)
+    return padded_sequence, padded_labels
 
 
-train_dataloader = DataLoader(training_data, batch_size=64, shuffle=False, collate_fn=collate_fn)
+training_dataloader = DataLoader(training_data, batch_size=64, shuffle=False, collate_fn=collate_fn)
 test_dataloader = DataLoader(test_data, batch_size=64, shuffle=False,collate_fn=collate_fn)
 
 if __name__ == '__main__' : 
-
-    print(training_data[0])
+    a, b = next(iter(training_dataloader)) 
+    print(a[:,:,:].shape, b)
+    # for i, (data, labels) in enumerate(training_dataloader):
+    #     print(data[:,:,:,:].shape)
 
 
 
