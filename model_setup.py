@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
-from dataset_test import training_dataloader, test_dataloader
+import dataset_test 
 
 
 
@@ -24,8 +24,8 @@ class EmotionModel(nn.Module):
 input_size = 165
 hidden_size = 128
 num_layers = 2
-num_classes = 7
-learning_rate = 0.001
+num_classes = 2
+learning_rate = 0.01
 num_epochs = 100
 batch_size = 32
 
@@ -34,20 +34,26 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 # Create DataLoaders for training and validation sets
-training_dataloader = training_dataloader
-test_dataloader = test_dataloader
-
-# Train the model
+training_dataloader = dataset_test.training_dataloader
+test_dataloader = dataset_test.test_dataloader
+ 
+# Train the model 
 for epoch in range(num_epochs):
+    print(f'Starting epoch {epoch+1}/{num_epochs}')
     for i, (data, labels) in enumerate(training_dataloader):
         # Forward pass
+        print('Forward pass')
         outputs = model(data)
         loss = criterion(outputs, labels)
-
+        
         # Backward pass and optimization
+        print('Backward pass')
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+
+        # Print progress after each batch iteration
+        print(f'Epoch [{epoch+1}/{num_epochs}], Batch [{i+1}/{len(training_dataloader)}], Loss: {loss.item():.4f}')
 
     # Evaluate the model on the validation set
     with torch.no_grad():
