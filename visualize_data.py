@@ -85,35 +85,35 @@ def change_mesh(connections, disconnections, add_connections):
 connections = change_mesh(connections, disconnections, add_connections)
 
 
-# def animate_facial_landmarks_3D(facial_landmarks):
-#     facial_landmarks = np.array(facial_landmarks)
-#     fig = plt.figure()
-#     ax = fig.add_subplot(111, projection='3d')
-#     ax.set_xlim(np.min(facial_landmarks[:,:,0]), np.max(facial_landmarks[:,:,0]))
-#     ax.set_ylim(np.min(facial_landmarks[:,:,1]), np.max(facial_landmarks[:,:,1]))
-#     ax.set_zlim(np.min(facial_landmarks[:,:,2]), np.max(facial_landmarks[:,:,2]))
-#     ax.set_box_aspect((np.ptp(facial_landmarks[:,:,0]), np.ptp(facial_landmarks[:,:,1]), np.ptp(facial_landmarks[:,:,2])))
+def animate_facial_landmarks_3D(facial_landmarks):
+    facial_landmarks = np.array(facial_landmarks)
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.set_xlim(np.min(facial_landmarks[:,:,0]), np.max(facial_landmarks[:,:,0]))
+    ax.set_ylim(np.min(facial_landmarks[:,:,1]), np.max(facial_landmarks[:,:,1]))
+    ax.set_zlim(np.min(facial_landmarks[:,:,2]), np.max(facial_landmarks[:,:,2]))
+    ax.set_box_aspect((np.ptp(facial_landmarks[:,:,0]), np.ptp(facial_landmarks[:,:,1]), np.ptp(facial_landmarks[:,:,2])))
 
-#     ax.axis('off')
-#     ax.grid(False)
+    ax.axis('off')
+    ax.grid(False)
 
     
 
-#     lines = [ax.plot([], [], [], 'b-')[0] for _ in range(len(connections))]
+    lines = [ax.plot([], [], [], 'b-')[0] for _ in range(len(connections))]
 
-#     def update(frame):
-#         for i, (start, end) in enumerate(connections):
-#             x = facial_landmarks[frame, [start, end], 0]
-#             y = facial_landmarks[frame, [start, end], 1]
-#             z = facial_landmarks[frame, [start, end], 2]
-#             lines[i].set_data(x, y)
-#             lines[i].set_3d_properties(z)
+    def update(frame):
+        for i, (start, end) in enumerate(connections):
+            x = facial_landmarks[frame, [start, end], 0]
+            y = facial_landmarks[frame, [start, end], 1]
+            z = facial_landmarks[frame, [start, end], 2]
+            lines[i].set_data(x, y)
+            lines[i].set_3d_properties(z)
 
-#         return lines
+        return lines
 
-#     anim = FuncAnimation(fig, update, frames=range(facial_landmarks.shape[0]), blit=False, interval=5)
-#     plt.show(block=True)
-#     return anim
+    anim = FuncAnimation(fig, update, frames=range(facial_landmarks.shape[0]), blit=False, interval=5)
+    plt.show(block=True)
+    return anim
 
 
 # animate_facial_landmarks_3D(training_data[8][0])
@@ -124,63 +124,63 @@ connections = change_mesh(connections, disconnections, add_connections)
 # print(RNSTRL)
 
 
-def animate_facial_landmarks_3D(datapoint_1, datapoint_2, color1='b', color2='r', x_shift = 10):
-    facial_landmarks1 = np.array(datapoint_1[0])
-    facial_landmarks2 = np.array(datapoint_2[0])
-    emotion_label1 = datapoint_1[1]
-    emotion_label2 = datapoint_2[1]
+# def animate_facial_landmarks_3D(datapoint_1, datapoint_2, color1='b', color2='r', x_shift = 10):
+#     facial_landmarks1 = np.array(datapoint_1[0])
+#     facial_landmarks2 = np.array(datapoint_2[0])
+#     emotion_label1 = datapoint_1[1]
+#     emotion_label2 = datapoint_2[1]
 
-    combined_landmarks = np.vstack((facial_landmarks1, facial_landmarks2))
+#     combined_landmarks = np.vstack((facial_landmarks1, facial_landmarks2))
     
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    ax.set_xlim(np.min(combined_landmarks[:,:,0]), np.max(combined_landmarks[:,:,0]))
-    ax.set_ylim(np.min(combined_landmarks[:,:,1]), np.max(combined_landmarks[:,:,1]))
-    ax.set_zlim(np.min(combined_landmarks[:,:,2]), np.max(combined_landmarks[:,:,2]))
-    ax.set_box_aspect((np.ptp(combined_landmarks[:,:,0]), np.ptp(combined_landmarks[:,:,1]), np.ptp(combined_landmarks[:,:,2])))
+#     fig = plt.figure()
+#     ax = fig.add_subplot(111, projection='3d')
+#     ax.set_xlim(np.min(combined_landmarks[:,:,0]), np.max(combined_landmarks[:,:,0]))
+#     ax.set_ylim(np.min(combined_landmarks[:,:,1]), np.max(combined_landmarks[:,:,1]))
+#     ax.set_zlim(np.min(combined_landmarks[:,:,2]), np.max(combined_landmarks[:,:,2]))
+#     ax.set_box_aspect((np.ptp(combined_landmarks[:,:,0]), np.ptp(combined_landmarks[:,:,1]), np.ptp(combined_landmarks[:,:,2])))
 
-    ax.axis('off')
-    ax.grid(False)
+#     ax.axis('off')
+#     ax.grid(False)
 
-    lines1 = [ax.plot([], [], [], color1 + '-')[0] for _ in range(len(connections))]
-    lines2 = [ax.plot([], [], [], color2 + '-')[0] for _ in range(len(connections))]
+#     lines1 = [ax.plot([], [], [], color1 + '-')[0] for _ in range(len(connections))]
+#     lines2 = [ax.plot([], [], [], color2 + '-')[0] for _ in range(len(connections))]
     
-    emotion_text1 = ax.text(0, 0, 0, emotion_label1, color=color1, rotation= -90)
-    emotion_text2 = ax.text(0, 0, 0, emotion_label2, color=color2, rotation= -90)
+#     emotion_text1 = ax.text(0, 0, 0, emotion_label1, color=color1, rotation= -90)
+#     emotion_text2 = ax.text(0, 0, 0, emotion_label2, color=color2, rotation= -90)
 
-    def update(frame):
-        for i, (start, end) in enumerate(connections):
-            if frame < facial_landmarks1.shape[0]:
-                x1 = facial_landmarks1[frame, [start, end], 0]
-                y1 = facial_landmarks1[frame, [start, end], 1]
-                z1 = facial_landmarks1[frame, [start, end], 2]
-                lines1[i].set_data(x1, y1)
-                lines1[i].set_3d_properties(z1)
-                x1_mean, y1_mean, z1_mean = np.mean(facial_landmarks1[frame], axis=0)
-                emotion_text1.set_position((x1_mean, y1_mean))
-                emotion_text1.set_3d_properties(z1_mean + 100)
+#     def update(frame):
+#         for i, (start, end) in enumerate(connections):
+#             if frame < facial_landmarks1.shape[0]:
+#                 x1 = facial_landmarks1[frame, [start, end], 0]
+#                 y1 = facial_landmarks1[frame, [start, end], 1]
+#                 z1 = facial_landmarks1[frame, [start, end], 2]
+#                 lines1[i].set_data(x1, y1)
+#                 lines1[i].set_3d_properties(z1)
+#                 x1_mean, y1_mean, z1_mean = np.mean(facial_landmarks1[frame], axis=0)
+#                 emotion_text1.set_position((x1_mean, y1_mean))
+#                 emotion_text1.set_3d_properties(z1_mean + 100)
 
-            if frame < facial_landmarks2.shape[0]:
-                x2 = facial_landmarks2[frame, [start, end], 0] + x_shift
-                y2 = facial_landmarks2[frame, [start, end], 1]
-                z2 = facial_landmarks2[frame, [start, end], 2]
-                lines2[i].set_data(x2, y2)
-                lines2[i].set_3d_properties(z2)
-                x2_mean, y2_mean, z2_mean = np.mean(facial_landmarks2[frame], axis=0)
-                emotion_text2.set_position((x2_mean + x_shift, y2_mean))
-                emotion_text2.set_3d_properties(z2_mean + 100)
+#             if frame < facial_landmarks2.shape[0]:
+#                 x2 = facial_landmarks2[frame, [start, end], 0] + x_shift
+#                 y2 = facial_landmarks2[frame, [start, end], 1]
+#                 z2 = facial_landmarks2[frame, [start, end], 2]
+#                 lines2[i].set_data(x2, y2)
+#                 lines2[i].set_3d_properties(z2)
+#                 x2_mean, y2_mean, z2_mean = np.mean(facial_landmarks2[frame], axis=0)
+#                 emotion_text2.set_position((x2_mean + x_shift, y2_mean))
+#                 emotion_text2.set_3d_properties(z2_mean + 100)
 
-        return lines1 + lines2 + [emotion_text1, emotion_text2]
+#         return lines1 + lines2 + [emotion_text1, emotion_text2]
 
-    max_frames = max(facial_landmarks1.shape[0], facial_landmarks2.shape[0])
-    anim = FuncAnimation(fig, update, frames=range(max_frames), blit=False, interval=5)
-    plt.show(block=True)
-    return anim
+#     max_frames = max(facial_landmarks1.shape[0], facial_landmarks2.shape[0])
+#     anim = FuncAnimation(fig, update, frames=range(max_frames), blit=False, interval=5)
+#     plt.show(block=True)
+#     return anim
 
 # Replace the following line
 # animate_facial_landmarks_3D(training_data[8][0])
 
-# With this line, using two different sets of facial landmarks from your dataset, and specifying the colors for each animation:
-animate_facial_landmarks_3D(training_data[8], training_data[20], color1='b', color2='r', x_shift=120)
+
+animate_facial_landmarks_3D(training_data[8])
 
 print(training_data[8][1])
