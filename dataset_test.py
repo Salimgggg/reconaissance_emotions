@@ -16,7 +16,7 @@ info_path = os.path.join(root_path, 'iemocap.csv')
 emotion_list = ['neu', 'fru', 'xxx', 'sur', 'ang', 'hap', 'sad', 'exc', 'oth', 'fea', 'dis'] 
 emotions_of_interest = ['sad', 'exc'] 
 label_map = {'sad': 0, 'exc': 1} 
-input_size = 165 
+input_size = len(base.points_interet)*3
 
 
 class IEMOCAP_dataset(Dataset):

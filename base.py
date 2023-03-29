@@ -20,7 +20,9 @@ zone = {'FH' : ['FH1', 'FH2', 'FH3'],
 
 points = ['CH1', 'CH2', 'CH3', 'FH1', 'FH2', 'FH3', 'LC1', 'LC2', 'LC3', 'LC4', 'LC5', 'LC6', 'LC7', 'LC8', 'RC1', 'RC2', 'RC3', 'RC4', 'RC5', 'RC6', 'RC7', 'RC8', 'LLID', 'RLID', 'MH', 'MNOSE', 'LNSTRL', 'TNOSE', 'RNSTRL', 'LBM0', 'LBM1', 'LBM2', 'LBM3', 'RBM0', 'RBM1', 'RBM2', 'RBM3', 'LBRO1', 'LBRO2', 'LBRO3', 'LBRO4', 'RBRO1', 'RBRO2', 'RBRO3', 'RBRO4', 'Mou1', 'Mou2', 'Mou3', 'Mou4', 'Mou5', 'Mou6', 'Mou7', 'Mou8', 'LHD', 'RHD']
 
-zones_interet = ['FH', 'LB', 'RB', 'LD', 'CH', 'N', 'MOU', 'LC', 'RC', 'HD', 'LD']
+zones_interet = ['CH']
+
+points_interet = [point for region in zones_interet for point in zone[region]]
 
 def boolean_from_zone(zone, points, zones_interet) : 
     
@@ -109,13 +111,7 @@ for index, row in df.iterrows():
 if __name__ == '__main__' : 
 
 
-    MOCAP_path = df['MOCAP_rotated_path']
-    a = MOCAP_path[2]
-    emotions_results = df['emotion']
-    print(a)
-    b = get_mocap_rot(a, zones_interet)
-    print(b[2].shape)
-
+    print(points_interet)
 
 
         
