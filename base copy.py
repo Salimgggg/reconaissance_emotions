@@ -32,9 +32,10 @@ def generate_tensor(full_path, points_list):
     return tensor
 
 
+
 df = pd.read_csv(os.path.join(root_path, 'iemocap.csv'))
-
-
+ 
+  
 for index, row in df.iterrows():
 
     session = row['session']
