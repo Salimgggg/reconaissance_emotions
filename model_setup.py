@@ -24,9 +24,9 @@ class EmotionModel(nn.Module):
 input_size = 165
 hidden_size = 128
 num_layers = 2
-num_classes = 2
-learning_rate = 0.01
-num_epochs = 100
+num_classes = len(dataset_test.emotions_of_interest)
+learning_rate = 0.007
+num_epochs = 20
 batch_size = 32
 
 model = EmotionModel(input_size, hidden_size, num_layers, num_classes)
@@ -38,12 +38,17 @@ training_dataloader = dataset_test.training_dataloader
 test_dataloader = dataset_test.test_dataloader
  
 # Train the model 
-for epoch in range(num_epochs):
+for epoch in range(num_epochs) : 
+    nb_param = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print('The model has {} parameters'.format(nb_param))
     print(f'Starting epoch {epoch+1}/{num_epochs}')
     for i, (data, labels) in enumerate(training_dataloader):
         # Forward pass
         print('Forward pass')
         outputs = model(data)
+        _, predicted = torch.max(outputs.data, 1)
+        print(predicted)
+        print(labels)
         loss = criterion(outputs, labels)
         
         # Backward pass and optimization
@@ -62,6 +67,7 @@ for epoch in range(num_epochs):
         for data, labels in test_dataloader:
             outputs = model(data)
             _, predicted = torch.max(outputs.data, 1)
+            print(predicted)
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
 

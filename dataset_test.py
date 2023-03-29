@@ -6,16 +6,17 @@ from torchvision.transforms import ToTensor
 from torch.nn.utils.rnn import pad_sequence
 import matplotlib.pyplot as plt
 import pandas as pd
+import base
 from base import filter_by_emotions, filter_by_session, get_mocap_rot
 from torch.utils.data import DataLoader
 import numpy as np
 
 root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
-info_path = os.path.join(root_path, 'iemocap.csv')
-emotion_list = ['neu', 'fru', 'xxx', 'sur', 'ang', 'hap', 'sad', 'exc', 'oth', 'fea', 'dis']
-emotions_of_interest = ['neu', 'ang']
-label_map = {'neu': 0, 'ang': 1}
-input_size = 165
+info_path = os.path.join(root_path, 'iemocap.csv') 
+emotion_list = ['neu', 'fru', 'xxx', 'sur', 'ang', 'hap', 'sad', 'exc', 'oth', 'fea', 'dis'] 
+emotions_of_interest = ['sad', 'exc'] 
+label_map = {'sad': 0, 'exc': 1} 
+input_size = 165 
 
 
 class IEMOCAP_dataset(Dataset):
@@ -48,7 +49,7 @@ class IEMOCAP_dataset(Dataset):
             return len(self.labels)
 
     def __getitem__(self, idx): 
-        item = torch.from_numpy(get_mocap_rot(self.data_paths[idx])[2])
+        item = torch.from_numpy(get_mocap_rot(self.data_paths[idx], base.zones_interet)[2])
         label = self.labels[idx]
         
         return item, label
@@ -73,12 +74,24 @@ def collate_fn(batch) :
     return padded_sequence, padded_labels
 
 
-training_dataloader = DataLoader(training_data, batch_size=64, shuffle=False, collate_fn=collate_fn)
-test_dataloader = DataLoader(test_data, batch_size=64, shuffle=False,collate_fn=collate_fn)
+training_dataloader = DataLoader(training_data, batch_size=32, shuffle=False, collate_fn=collate_fn)
+test_dataloader = DataLoader(test_data, batch_size=32, shuffle=False,collate_fn=collate_fn)
 
 if __name__ == '__main__' : 
-    a, b = next(iter(training_dataloader)) 
-    print(a[:,:,:].shape, b)
+    total = 0
+    print(len(test_data))
+    print(len(training_data))
+    happy = 0
+    neutre = 0
+    # for data_point in training_data : 
+    #     print(data_point[1])
+    #     if data_point[1] == 'hap' : 
+    #         happy += 1
+    #     else :
+    #         neutre += 1
+    #     print(f'happy : {happy}', f'neutre : {neutre}')
+    
+         
     # for i, (data, labels) in enumerate(training_dataloader):
     #     print(data[:,:,:,:].shape)
 
