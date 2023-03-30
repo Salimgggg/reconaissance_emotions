@@ -1,8 +1,8 @@
 
-import dataset_test
+import dataset_setup
 
 # Load the training data
-training_data = next(iter(dataset_test.training_dataloader))
+training_data = next(iter(dataset_setup.training_dataloader))
 data_point = training_data[0][0]
 print(data_point.shape)
 

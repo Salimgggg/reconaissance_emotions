@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.animation import FuncAnimation
 import numpy as np
-from dataset_test import training_data
+from dataset_setup import training_data
 import matplotlib.backends.backend_agg
 
 zone = {'FH' : ['FH1', 'FH2', 'FH3'],
