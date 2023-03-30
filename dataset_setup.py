@@ -14,7 +14,7 @@ import numpy as np
 root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
 info_path = os.path.join(root_path, 'iemocap.csv') 
 emotion_list = ['neu', 'fru', 'xxx', 'sur', 'ang', 'hap', 'sad', 'exc', 'oth', 'fea', 'dis'] 
-emotions_of_interest = ['sad', 'exc', 'neu'] 
+emotions_of_interest = ['sad', 'exc'] 
 label_map = { x : (emotions_of_interest.index(x)) for x in emotions_of_interest} 
 input_size = len(base.points_interet)*3
 window_size = 300
@@ -73,7 +73,7 @@ test_data = IEMOCAP_dataset(info_path, False, emotions_of_interest)
 the default collate_fn function, so we define a custom collate_fn to zero_pad every batch following
 the datapoint with the most frames of this batch'''
 
-def collate_fn(batch):
+def collate_fn1(batch):
     labels = []
     sequence = []
     for i in range(len(batch)):
@@ -96,9 +96,36 @@ def collate_fn(batch):
 
     return sequence, labels
 
+def collate_fn2(batch): 
+    labels = []
+    sequence = []
+    for i in range(len(batch)):
+        element = batch[i][0]
+        label = batch[i][1]
+        size = element.shape
+        if size[0] > window_size:
+            min = size[0]//2 - window_size//2
+            max = size[0]//2 + window_size//2
+            new = element[min:max, :, :]
+        else:
+            new = np.zeros((window_size, size[1], size[2]))
+            new[:element.shape[0], :, :] = element
+        new = new.reshape(new.shape[0], -1)
+        sequence.append(np.array(new))
+        labels.append(label_map[label])
 
-training_dataloader = DataLoader(training_data, batch_size=16, shuffle=True, collate_fn=collate_fn)
-test_dataloader = DataLoader(test_data, batch_size=16, shuffle=False,collate_fn=collate_fn)
+    sequence = np.array(sequence)
+    sequence = torch.tensor(sequence).float()  # Change data type to torch.FloatTensor
+    labels = np.array(labels)
+    labels = torch.tensor(labels).to(torch.long)
+
+    return sequence, labels
+
+
+training_dataloader = DataLoader(training_data, batch_size=16, shuffle=True, collate_fn=collate_fn2)
+test_dataloader = DataLoader(test_data, batch_size=16, shuffle=False,collate_fn=collate_fn2)
+
+
 
 if __name__ == '__main__' : 
     a = next(iter(training_dataloader))
