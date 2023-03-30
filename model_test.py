@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
-import dataset_test 
+import dataset_setup 
 import base
 
 
@@ -11,7 +11,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # Define the LSTM model
 
 class LSTMModel(nn.Module):
-    def __init__(self, input_size, hidden_size1=512, hidden_size2=256, output_size=2):
+    def __init__(self, input_size, hidden_size1=512, hidden_size2=256, output_size=len(dataset_setup.label_map)):
         super(LSTMModel, self).__init__()
         self.lstm1 = nn.LSTM(input_size, hidden_size1, batch_first=True)
         self.lstm2 = nn.LSTM(hidden_size1, hidden_size2, batch_first=True)
@@ -37,7 +37,7 @@ input_size = len(base.points_interet) * 3
 hidden_size1= 512
 hidden_size2= 256
 num_layers = 2
-num_classes = len(dataset_test.emotions_of_interest)
+num_classes = len(dataset_setup.emotions_of_interest)
 learning_rate = 0.001
 num_epochs = 20
 batch_size = 32
@@ -48,8 +48,8 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 # Create DataLoaders for training and validation sets
-training_dataloader = dataset_test.training_dataloader
-test_dataloader = dataset_test.test_dataloader
+training_dataloader = dataset_setup.training_dataloader
+test_dataloader = dataset_setup.test_dataloader
 
 a = next(iter(training_dataloader))
 

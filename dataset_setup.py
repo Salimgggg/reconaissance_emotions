@@ -14,9 +14,10 @@ import numpy as np
 root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
 info_path = os.path.join(root_path, 'iemocap.csv') 
 emotion_list = ['neu', 'fru', 'xxx', 'sur', 'ang', 'hap', 'sad', 'exc', 'oth', 'fea', 'dis'] 
-emotions_of_interest = ['sad', 'exc'] 
-label_map = {'sad': 0, 'exc': 1} 
+emotions_of_interest = ['sad', 'exc', 'neu'] 
+label_map = { x : (emotions_of_interest.index(x)) for x in emotions_of_interest} 
 input_size = len(base.points_interet)*3
+window_size = 300
 
 def normalize_array(arr):
     max_vals = np.amax(arr, axis=(0,1)) # maximum values for each coordinate across all frames and points
@@ -79,14 +80,14 @@ def collate_fn(batch):
         element = batch[i][0]
         label = batch[i][1]
         size = element.shape
-        if size[0] > 200:
-            new = element[0:200, :, :]
+        if size[0] > window_size:
+            new = element[0:window_size, :, :]
         else:
-            new = np.zeros((200, size[1], size[2]))
+            new = np.zeros((window_size, size[1], size[2]))
             new[:element.shape[0], :, :] = element
-        new = new.reshape(new.shape[0], 165)
+        new = new.reshape(new.shape[0], -1)
         sequence.append(np.array(new))
-        labels.append(1 if label == 'exc' else 0)
+        labels.append(label_map[label])
 
     sequence = np.array(sequence)
     sequence = torch.tensor(sequence).float()  # Change data type to torch.FloatTensor
@@ -100,10 +101,14 @@ training_dataloader = DataLoader(training_data, batch_size=16, shuffle=True, col
 test_dataloader = DataLoader(test_data, batch_size=16, shuffle=False,collate_fn=collate_fn)
 
 if __name__ == '__main__' : 
-    # Iterate over the dataloader and inspect each batch
     a = next(iter(training_dataloader))
     print(a[0].shape)
-    print(a[0][0].shape)
+    print(label_map)
+
+
+    # Iterate over the dataloader and inspect each batch
+    pass
+    
 
     # for data_point in training_data : 
     #     print(data_point[1])
