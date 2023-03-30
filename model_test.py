@@ -11,14 +11,14 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # Define the LSTM model
 
 class LSTMModel(nn.Module):
-    def __init__(self, input_size, hidden_size1, hidden_size2, output_size=2):
+    def __init__(self, input_size, hidden_size1=512, hidden_size2=256, output_size=2):
         super(LSTMModel, self).__init__()
         self.lstm1 = nn.LSTM(input_size, hidden_size1, batch_first=True)
         self.lstm2 = nn.LSTM(hidden_size1, hidden_size2, batch_first=True)
         self.fc1 = nn.Linear(hidden_size2, 512)
         self.relu = nn.ReLU()
         self.fc2 = nn.Linear(512, output_size)
-        self.softmax = nn.Softmax(dim=1)
+
 
     def forward(self, x):
         x, _ = self.lstm1(x)
@@ -27,7 +27,7 @@ class LSTMModel(nn.Module):
         x = self.fc1(x)
         x = self.relu(x)
         x = self.fc2(x)
-        x = self.softmax(x)
+
         return x
 
 
@@ -38,20 +38,24 @@ hidden_size1= 512
 hidden_size2= 256
 num_layers = 2
 num_classes = len(dataset_test.emotions_of_interest)
-learning_rate = 0.007
+learning_rate = 0.001
 num_epochs = 20
 batch_size = 32
 
 
-model = LSTMModel(input_size = input_size, hidden_size1=hidden_size1, hidden_size2=hidden_size2, output_size= num_classes).to(device)
+model = LSTMModel(input_size)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 # Create DataLoaders for training and validation sets
 training_dataloader = dataset_test.training_dataloader
 test_dataloader = dataset_test.test_dataloader
+
+a = next(iter(training_dataloader))
+
+print(a[0][0].shape)
  
-# Train the model 
+#Train the model 
 for epoch in range(num_epochs) : 
     nb_param = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print('The model has {} parameters'.format(nb_param))
@@ -60,10 +64,10 @@ for epoch in range(num_epochs) :
     print(f'Starting epoch {epoch+1}/{num_epochs}')
     for i, (data, labels) in enumerate(training_dataloader):
         # Forward pass
-        data, labels = data.to(device), labels.to(device)
         print('Forward pass')
         outputs = model(data)
         _, predicted = torch.max(outputs.data, 1)
+        print(outputs)
         print(predicted)
         print(labels)
         loss = criterion(outputs, labels)

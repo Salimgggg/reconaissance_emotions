@@ -20,7 +20,7 @@ zone = {'FH' : ['FH1', 'FH2', 'FH3'],
 
 points = ['CH1', 'CH2', 'CH3', 'FH1', 'FH2', 'FH3', 'LC1', 'LC2', 'LC3', 'LC4', 'LC5', 'LC6', 'LC7', 'LC8', 'RC1', 'RC2', 'RC3', 'RC4', 'RC5', 'RC6', 'RC7', 'RC8', 'LLID', 'RLID', 'MH', 'MNOSE', 'LNSTRL', 'TNOSE', 'RNSTRL', 'LBM0', 'LBM1', 'LBM2', 'LBM3', 'RBM0', 'RBM1', 'RBM2', 'RBM3', 'LBRO1', 'LBRO2', 'LBRO3', 'LBRO4', 'RBRO1', 'RBRO2', 'RBRO3', 'RBRO4', 'Mou1', 'Mou2', 'Mou3', 'Mou4', 'Mou5', 'Mou6', 'Mou7', 'Mou8', 'LHD', 'RHD']
 
-zones_interet = ['CH']
+zones_interet = ['CH', 'FH', 'LB', 'RB', 'RC', 'LC', 'LD', 'HD', 'MOU', 'N', ]
 
 points_interet = [point for region in zones_interet for point in zone[region]]
 
@@ -39,6 +39,37 @@ def boolean_from_zone(zone, points, zones_interet) :
     
     return boolean_from_points(points, points_interet)
 
+
+def calcul_proba(liste_emotions):
+    proba_emotion={
+        'fru' : 1849,
+        'neu' : 1708,
+        'ang' : 1103,
+        'sad' : 1084,
+        'exc' : 1041,
+        'hap' : 595,
+        'sur' : 107,
+        'fea' : 40,
+        'oth' : 3,
+        'dis' : 2
+    }
+    tot=0
+    sample=[]
+    for k in range(len(liste_emotions)):
+        emotion=liste_emotions[k]
+        sample += proba_emotion[emotion]*[emotion]
+        tot+=proba_emotion[emotion]
+    for i in range(10000):
+        liste=[]
+        occ=0
+        rand=np.random.choice(liste_emotions, tot, replace = True)
+        for j in range(tot):
+            if sample[j]==rand[j]:
+                occ+=1
+        pourcentage=occ/tot
+        liste.append(pourcentage)
+    proba=np.mean(liste)
+    return proba 
 
 
 
@@ -81,6 +112,8 @@ def get_mocap_rot(path, zone_interet):
 
     return header, xyz, data_list
 
+
+
 def frame_to_s(fr):
     return (fr+2)*10/1000
 
@@ -110,9 +143,9 @@ for index, row in df.iterrows():
 
 if __name__ == '__main__' : 
 
-
-    print(points_interet)
-
+    path = df['MOCAP_rotated_path'][0]
+    print(os.path.join(root_path, path))
+    print(calcul_proba(['hap','neu']))
 
         
 

@@ -18,6 +18,12 @@ emotions_of_interest = ['sad', 'exc']
 label_map = {'sad': 0, 'exc': 1} 
 input_size = len(base.points_interet)*3
 
+def normalize_array(arr):
+    max_vals = np.amax(arr, axis=(0,1)) # maximum values for each coordinate across all frames and points
+    normalized_arr = arr / max_vals # divide every coordinate by the maximum value
+    
+    return normalized_arr
+
 
 class IEMOCAP_dataset(Dataset):
     
@@ -49,7 +55,10 @@ class IEMOCAP_dataset(Dataset):
             return len(self.labels)
 
     def __getitem__(self, idx): 
-        item = torch.from_numpy(get_mocap_rot(self.data_paths[idx], base.zones_interet)[2])
+        
+        item = get_mocap_rot(self.data_paths[idx], base.zones_interet)[2]
+        item = normalize_array(item)
+        item = torch.from_numpy(item)
         label = self.labels[idx]
         
         return item, label
@@ -63,26 +72,39 @@ test_data = IEMOCAP_dataset(info_path, False, emotions_of_interest)
 the default collate_fn function, so we define a custom collate_fn to zero_pad every batch following
 the datapoint with the most frames of this batch'''
 
-def collate_fn(batch) :
-    sequence = [batch[i][0] for i in range (len(batch))]
-    padded_sequence = pad_sequence(sequence, batch_first=True)
-    padded_sequence = padded_sequence.reshape(padded_sequence.shape[0], padded_sequence.shape[1], input_size)
+def collate_fn(batch):
+    labels = []
+    sequence = []
+    for i in range(len(batch)):
+        element = batch[i][0]
+        label = batch[i][1]
+        size = element.shape
+        if size[0] > 200:
+            new = element[0:200, :, :]
+        else:
+            new = np.zeros((200, size[1], size[2]))
+            new[:element.shape[0], :, :] = element
+        new = new.reshape(new.shape[0], 165)
+        sequence.append(np.array(new))
+        labels.append(1 if label == 'exc' else 0)
 
-    labels = [batch[i][1] for i in range(len(batch))]
-    num_labels = [label_map[label] for label in labels]
-    padded_labels = torch.tensor(num_labels)
-    return padded_sequence, padded_labels
+    sequence = np.array(sequence)
+    sequence = torch.tensor(sequence).float()  # Change data type to torch.FloatTensor
+    labels = np.array(labels)
+    labels = torch.tensor(labels).to(torch.long)
+
+    return sequence, labels
 
 
-training_dataloader = DataLoader(training_data, batch_size=32, shuffle=False, collate_fn=collate_fn)
-test_dataloader = DataLoader(test_data, batch_size=32, shuffle=False,collate_fn=collate_fn)
+training_dataloader = DataLoader(training_data, batch_size=16, shuffle=True, collate_fn=collate_fn)
+test_dataloader = DataLoader(test_data, batch_size=16, shuffle=False,collate_fn=collate_fn)
 
 if __name__ == '__main__' : 
-    total = 0
-    print(len(test_data))
-    print(len(training_data))
-    happy = 0
-    neutre = 0
+    # Iterate over the dataloader and inspect each batch
+    a = next(iter(training_dataloader))
+    print(a[0].shape)
+    print(a[0][0].shape)
+
     # for data_point in training_data : 
     #     print(data_point[1])
     #     if data_point[1] == 'hap' : 

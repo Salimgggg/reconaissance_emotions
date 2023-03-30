@@ -2,8 +2,9 @@
 import dataset_test
 
 # Load the training data
-training_data = dataset_test.training_data
-data_point = training_data[8][0]
+training_data = next(iter(dataset_test.training_dataloader))
+data_point = training_data[0][0]
+print(data_point.shape)
 
 import numpy as np
 import matplotlib.pyplot as plt
