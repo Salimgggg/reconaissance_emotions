@@ -20,7 +20,7 @@ zone = {'FH' : ['FH1', 'FH2', 'FH3'],
 
 points = ['CH1', 'CH2', 'CH3', 'FH1', 'FH2', 'FH3', 'LC1', 'LC2', 'LC3', 'LC4', 'LC5', 'LC6', 'LC7', 'LC8', 'RC1', 'RC2', 'RC3', 'RC4', 'RC5', 'RC6', 'RC7', 'RC8', 'LLID', 'RLID', 'MH', 'MNOSE', 'LNSTRL', 'TNOSE', 'RNSTRL', 'LBM0', 'LBM1', 'LBM2', 'LBM3', 'RBM0', 'RBM1', 'RBM2', 'RBM3', 'LBRO1', 'LBRO2', 'LBRO3', 'LBRO4', 'RBRO1', 'RBRO2', 'RBRO3', 'RBRO4', 'Mou1', 'Mou2', 'Mou3', 'Mou4', 'Mou5', 'Mou6', 'Mou7', 'Mou8', 'LHD', 'RHD']
 
-zones_interet = ['CH', 'FH', 'LB', 'RB', 'RC', 'LC', 'LD', 'HD', 'MOU' ]
+zones_interet = ['CH', 'FH', 'LB', 'RB', 'RC', 'LC', 'HD', 'N' ]
 
 points_interet = [point for region in zones_interet for point in zone[region]]
 

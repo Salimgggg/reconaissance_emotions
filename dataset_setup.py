@@ -14,10 +14,10 @@ import numpy as np
 root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
 info_path = os.path.join(root_path, 'iemocap.csv') 
 emotion_list = ['neu', 'fru', 'xxx', 'sur', 'ang', 'hap', 'sad', 'exc', 'oth', 'fea', 'dis'] 
-emotions_of_interest = ['sad', 'exc'] 
+emotions_of_interest = ['ang', 'sad', 'exc'] 
 label_map = { x : (emotions_of_interest.index(x)) for x in emotions_of_interest} 
 input_size = len(base.points_interet)*3
-window_size = 300
+window_size = 200
 
 def normalize_array(arr):
     max_vals = np.amax(arr, axis=(0,1)) # maximum values for each coordinate across all frames and points
@@ -25,6 +25,13 @@ def normalize_array(arr):
     
     return normalized_arr
 
+
+def chunkitup(sequence, window_size):
+    # Calculate the number of chunks
+    num_chunks = len(sequence) // window_size
+    # Split the list into window-sized chunks
+    chunks = [sequence[i * window_size:(i + 1) * window_size] for i in range(num_chunks)]
+    return chunks
 
 class IEMOCAP_dataset(Dataset):
     
@@ -58,7 +65,7 @@ class IEMOCAP_dataset(Dataset):
     def __getitem__(self, idx): 
         
         item = get_mocap_rot(self.data_paths[idx], base.zones_interet)[2]
-        item = normalize_array(item)
+        # item = normalize_array(item)
         item = torch.from_numpy(item)
         label = self.labels[idx]
         
@@ -120,6 +127,41 @@ def collate_fn2(batch):
     labels = torch.tensor(labels).to(torch.long)
 
     return sequence, labels
+
+def collatefn3 (batch) : 
+    labels = []
+    sequence = []
+    for i in range(len(batch)):
+        # for each element, label in batch
+        element, label = batch[i][0], batch[i][1]
+        size = element.shape
+        sequence_lenght = size[0]
+        # if it is too short, we zero pad it, else we chunk it into window sized pieces
+        if sequence_lenght < window_size :
+
+            new = np.zeros((window_size, size[1], size[2]))
+            new[:sequence_lenght, :, :] = element
+            new = new.reshape(new.shape[0], -1)
+
+            sequence.append(np.array(new))
+            labels.append(label_map[label])
+
+        else : 
+            chunks = chunkitup(element, window_size)
+            chunks = [ch.reshape(window_size, -1) for ch in chunks]
+
+            
+            for ch in chunks :
+                sequence.append(ch)
+                labels.append(label_map[label])
+            
+    sequence = np.array(sequence)
+    sequence = torch.tensor(sequence).float()  # Change data type to torch.FloatTensor
+    labels = np.array(labels)
+    labels = torch.tensor(labels).to(torch.long)
+
+    return sequence, labels
+    
 
 
 training_dataloader = DataLoader(training_data, batch_size=16, shuffle=True, collate_fn=collate_fn2)

@@ -180,7 +180,8 @@ def animate_facial_landmarks_3D(facial_landmarks):
 # Replace the following line
 # animate_facial_landmarks_3D(training_data[8][0])
 
+a = training_data[3]
 
-animate_facial_landmarks_3D(training_data[8])
+animate_facial_landmarks_3D(a[0])
 
 print(training_data[8][1])
