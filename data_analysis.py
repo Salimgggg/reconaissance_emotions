@@ -17,7 +17,7 @@ root_path = 'IEMOCAP_full_release_withoutVideos_sentenceOnly'
 info_path = os.path.join(root_path, 'iemocap.csv') 
 
 emotion_list = ['neu', 'fru', 'xxx', 'sur', 'ang', 'hap', 'sad', 'exc', 'oth', 'fea', 'dis'] 
-emotions_of_interest = ['oth'] 
+emotions_of_interest = [''] 
 window_size = 300
 
 emotion = 'emotion'
@@ -43,12 +43,12 @@ if __name__ == '__main__' :
 
 
     print(sum(session_lenghts))
-    # bins = np.arange(0, max(session_lenghts) + 30, 30)  # create bins with width of 20
-    # hist, edges = np.histogram(session_lenghts, bins)  # count number of values in each bin
+    bins = np.arange(0, max(session_lenghts) + 30, 30)  # create bins with width of 20
+    hist, edges = np.histogram(session_lenghts, bins)  # count number of values in each bin
 
-    # plt.bar(range(len(hist)), hist)  # plot bar chart
-    # plt.xticks(range(len(hist)), edges[:-1])  # label x-axis with bin edges
-    # plt.show()
+    plt.bar(range(len(hist)), hist)  # plot bar chart
+    plt.xticks(range(len(hist)), edges[:-1])  # label x-axis with bin edges
+    plt.show()
 
   
 
